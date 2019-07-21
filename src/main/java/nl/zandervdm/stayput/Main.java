@@ -6,6 +6,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import nl.zandervdm.stayput.Commands.StayputCommand;
+import nl.zandervdm.stayput.Listeners.PlayerQuitEventListener;
 import nl.zandervdm.stayput.Listeners.PlayerTeleportEventListener;
 import nl.zandervdm.stayput.Models.Position;
 import nl.zandervdm.stayput.Repositories.PositionRepository;
@@ -18,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 public class Main extends JavaPlugin {
 
@@ -87,6 +87,7 @@ public class Main extends JavaPlugin {
 
     protected void setupListeners(){
         getServer().getPluginManager().registerEvents(new PlayerTeleportEventListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(this), this);
         if(Main.config.getBoolean("debug")) getLogger().info("Setting up listeners");
     }
 

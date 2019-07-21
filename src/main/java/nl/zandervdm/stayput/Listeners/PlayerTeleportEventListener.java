@@ -1,9 +1,7 @@
 package nl.zandervdm.stayput.Listeners;
 
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
-import javafx.geometry.Pos;
 import nl.zandervdm.stayput.Main;
-import nl.zandervdm.stayput.Models.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,14 +9,26 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.sql.SQLException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlayerTeleportEventListener implements Listener {
 
     protected Main plugin;
+
+    private static Set<Material> PRESSURE_PLATES = new HashSet<Material>(Arrays.asList(
+            Material.STONE_PRESSURE_PLATE,
+            Material.ACACIA_PRESSURE_PLATE,
+            Material.BIRCH_PRESSURE_PLATE,
+            Material.DARK_OAK_PRESSURE_PLATE,
+            Material.HEAVY_WEIGHTED_PRESSURE_PLATE,
+            Material.JUNGLE_PRESSURE_PLATE,
+            Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
+            Material.OAK_PRESSURE_PLATE,
+            Material.SPRUCE_PRESSURE_PLATE
+    ));
 
     public PlayerTeleportEventListener(Main plugin) {
         this.plugin = plugin;
@@ -42,7 +52,7 @@ public class PlayerTeleportEventListener implements Listener {
         Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, event.getFrom(), event.getDestination().getLocation(player));
 
         if(previousLocation != null) {
-            if(this.isPressureplate(previousLocation)){
+            if(this.isPressurePlate(previousLocation)){
                 // Find a valid spot around the location
                 Location newLocation = this.findAvailableLocation(previousLocation);
                 if(newLocation != null) previousLocation = newLocation;
@@ -56,20 +66,14 @@ public class PlayerTeleportEventListener implements Listener {
         }
     }
 
-    protected boolean isPressureplate(Location toLocation) {
+    protected boolean isPressurePlate(Location toLocation) {
         Location blockBelow = new Location(toLocation.getWorld(), toLocation.getX(), toLocation.getY()-1, toLocation.getZ());
-        if(blockBelow.getBlock().getType().equals(Material.STONE_PLATE)) return true;
-        if(blockBelow.getBlock().getType().equals(Material.WOOD_PLATE)) return true;
-        if(blockBelow.getBlock().getType().equals(Material.IRON_PLATE)) return true;
-        if(blockBelow.getBlock().getType().equals(Material.GOLD_PLATE)) return true;
-        if(toLocation.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.STONE_PLATE)) return true;
-        if(toLocation.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.GOLD_PLATE)) return true;
-        if(toLocation.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.IRON_PLATE)) return true;
-        if(toLocation.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.WOOD_PLATE)) return true;
-        if(toLocation.getBlock().getType().equals(Material.STONE_PLATE)) return true;
-        if(toLocation.getBlock().getType().equals(Material.WOOD_PLATE)) return true;
-        if(toLocation.getBlock().getType().equals(Material.IRON_PLATE)) return true;
-        if(toLocation.getBlock().getType().equals(Material.GOLD_PLATE)) return true;
+        if (PRESSURE_PLATES.contains(blockBelow.getBlock().getType()))
+            return true;
+        else if(PRESSURE_PLATES.contains(toLocation.getBlock().getRelative(BlockFace.DOWN).getType()))
+            return true;
+        else if(PRESSURE_PLATES.contains(toLocation.getBlock().getType()))
+            return true;
         return false;
     }
 

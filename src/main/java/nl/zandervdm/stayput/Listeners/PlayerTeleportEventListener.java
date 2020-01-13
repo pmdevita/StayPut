@@ -1,6 +1,8 @@
 package nl.zandervdm.stayput.Listeners;
 
+import com.onarandombox.MultiverseCore.api.MVDestination;
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
+import com.onarandombox.MultiversePortals.event.MVPortalEvent;
 import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,22 +36,19 @@ public class PlayerTeleportEventListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onPlayerTeleportEvent(MVTeleportEvent event){
-        if(Main.config.getBoolean("debug")) this.plugin.getLogger().info("PlayerTeleportEvent activated");
-        Player player = event.getTeleportee();
-        World fromWorld = event.getFrom().getWorld();
-        World toWorld = event.getDestination().getLocation(player).getWorld();
+    private boolean handleTeleport(Player player, Location from, MVDestination destination, boolean isPortal) {
+        if(Main.config.getBoolean("debug"))
+            this.plugin.getLogger().info(String.format("Player%sEvent activated", isPortal ? "Portal" : "Teleport"));
 
-        if(!this.plugin.getRuleManager().shouldUpdateLocation(player, event.getFrom(), event.getDestination().getLocation(player))){
-            return;
+        if(!this.plugin.getRuleManager().shouldUpdateLocation(player, from, destination.getLocation(player))){
+            return false;
         }
 
         //We should always update the previous location for the previous world for this player because at this point
         //he left the previous world
-        this.plugin.getPositionRepository().updateLocationForPlayer(player, event.getFrom());
+        this.plugin.getPositionRepository().updateLocationForPlayer(player, from);
 
-        Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, event.getFrom(), event.getDestination().getLocation(player));
+        Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, from, destination.getLocation(player));
 
         if(previousLocation != null) {
             if(this.isPressurePlate(previousLocation)){
@@ -61,9 +60,24 @@ public class PlayerTeleportEventListener implements Listener {
             //There is a location, and the player should teleport, so teleport him
             if (Main.config.getBoolean("debug"))
                 this.plugin.getLogger().info("Teleporting player to his previous location");
-            event.setCancelled(true);
+
             player.teleport(previousLocation);
+            return true;
         }
+
+        return false;
+    }
+
+    @EventHandler
+    public void onPlayerTeleportEvent(MVTeleportEvent event){
+        if (handleTeleport(event.getTeleportee(), event.getFrom(), event.getDestination(), false))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerPortalEvent(MVPortalEvent event) {
+        if(handleTeleport(event.getTeleportee(), event.getFrom(), event.getDestination(), true))
+            event.setCancelled(true);
     }
 
     protected boolean isPressurePlate(Location toLocation) {

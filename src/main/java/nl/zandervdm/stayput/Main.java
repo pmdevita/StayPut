@@ -3,6 +3,7 @@ package nl.zandervdm.stayput;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import nl.zandervdm.stayput.Commands.StayputCommand;
@@ -57,7 +58,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable(){
-        syncPlayerstoDatabase();
+        syncPlayersToDatabase();
     }
 
     public Dao<Position, Integer> getPositionMapper(){
@@ -96,7 +97,8 @@ public class Main extends JavaPlugin {
     }
 
     protected void setupDatabase(){
-        if(Main.config.getString("type").equals("sqlite")){
+        // SQLite setup
+        if (Main.config.getString("type").equals("sqlite")) {
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException e) {
@@ -110,7 +112,8 @@ public class Main extends JavaPlugin {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }else if(Main.config.getString("type").equals("mysql")) {
+        // MySQL Setup
+        } else if(Main.config.getString("type").equals("mysql")) {
             String host = Main.config.getString("mysql.host");
             Integer port = Main.config.getInt("mysql.port");
             String database = Main.config.getString("mysql.database");
@@ -119,14 +122,14 @@ public class Main extends JavaPlugin {
             String datasource = "jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true";
             connectionSource = null;
             try {
-                connectionSource = new JdbcConnectionSource(datasource, username, password);
+                connectionSource = new JdbcPooledConnectionSource(datasource, username, password);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             getLogger().warning("Invalid database connection type chosen!");
         }
-        if(Main.config.getBoolean("debug")) getLogger().info("Setting up database");
+        if (Main.config.getBoolean("debug")) getLogger().info("Setting up database");
     }
 
     protected void setupDao(){
@@ -147,7 +150,7 @@ public class Main extends JavaPlugin {
         if(Main.config.getBoolean("debug")) getLogger().info("Setting up tables");
     }
 
-    protected void syncPlayerstoDatabase(){
+    protected void syncPlayersToDatabase(){
         Collection<? extends Player> players = getServer().getOnlinePlayers();
         for(Player player : players){
             if(player.hasPermission("stayput.use")) {

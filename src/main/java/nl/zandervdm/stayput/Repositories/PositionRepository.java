@@ -16,8 +16,11 @@ public class PositionRepository {
         this.plugin = plugin;
     }
 
-    public void updateLocationForPlayer(Player player, Location location){
+    // Update location in database for world change, logoff, etc.
+    public void updateLocationForPlayer(Player player, Location location) {
         Position position = null;
+        this.plugin.getLogger().info("Saving " + player.getName() + " (" + player.getUniqueId().toString() + ")'s location in >" + location.getWorld().getName() + "<");
+        // Try to get the row for this player and world
         try {
             position = this.plugin.getPositionMapper()
                     .queryBuilder()
@@ -28,11 +31,16 @@ public class PositionRepository {
                     .queryForFirst();
         } catch (SQLException e) {
             //
+            this.plugin.getLogger().info("An exception occurred when querying for the position row.");
+            this.plugin.getLogger().info("The exception was specifically called " + e.getClass().getCanonicalName());
         }
 
-        if(position == null) {
+        // If it doesn't exist, make a new one
+        if (position == null) {
             position = new Position();
         }
+
+        // Update the data
         position.setWorld_name(location.getWorld().getName());
         position.setPlayer_name(player.getName());
         position.setUuid(player.getUniqueId().toString());
@@ -41,6 +49,8 @@ public class PositionRepository {
         position.setCoordinate_z(location.getZ() * 1.0);
         position.setYaw(location.getYaw());
         position.setPitch(location.getPitch());
+
+        // And commit it
         try {
             this.plugin.getPositionMapper().createOrUpdate(position);
         } catch (SQLException e) {
@@ -48,7 +58,8 @@ public class PositionRepository {
         }
     }
 
-    public Location getPreviousLocation(Player player, World world){
+    // Get last location in world for player
+    public Location getPreviousLocation(Player player, World world) {
         Position position = null;
         try {
             position = this.plugin.getPositionMapper()
@@ -59,9 +70,12 @@ public class PositionRepository {
                     .eq("world_name", world.getName())
                     .queryForFirst();
         } catch (SQLException e) {
+            this.plugin.getLogger().info("Can't get player's position from DB " + e.getClass().getCanonicalName());
             return null;
         }
-        if(position == null) return null;
+        if (position == null)
+            return null;
+
         double coordX = position.getCoordinate_x();
         double coordY = position.getCoordinate_y();
         double coordZ = position.getCoordinate_z();

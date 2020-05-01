@@ -7,6 +7,7 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import nl.zandervdm.stayput.Commands.StayputCommand;
+import nl.zandervdm.stayput.Listeners.MVPortalsListener;
 import nl.zandervdm.stayput.Listeners.PlayerQuitEventListener;
 import nl.zandervdm.stayput.Listeners.PlayerTeleportEventListener;
 import nl.zandervdm.stayput.Models.Position;
@@ -22,12 +23,14 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class Main extends JavaPlugin {
+    private boolean debug;
 
     public static FileConfiguration config;
 
     //Util classes
     protected ConfigManager configManager;
     protected RuleManager ruleManager;
+    protected Teleport teleport;
 
     //Database connection stuff
     protected ConnectionSource connectionSource;
@@ -57,46 +60,59 @@ public class Main extends JavaPlugin {
     }
 
     @Override
-    public void onDisable(){
+    public void onDisable() {
         syncPlayersToDatabase();
     }
 
-    public Dao<Position, Integer> getPositionMapper(){
+    public Dao<Position, Integer> getPositionMapper() {
         return this.positionMapper;
     }
 
-    public PositionRepository getPositionRepository(){
+    public PositionRepository getPositionRepository() {
         return this.positionRepository;
     }
 
-    public RuleManager getRuleManager(){
+    public RuleManager getRuleManager() {
         return this.ruleManager;
     }
 
-    protected void setupClasses(){
+    public Teleport getTeleport() {
+        return this.teleport;
+    }
+
+    protected void setupClasses() {
         this.configManager = new ConfigManager(this);
         this.ruleManager = new RuleManager(this);
-
         this.positionRepository = new PositionRepository(this);
+        this.teleport = new Teleport(this);
     }
 
-    public void setupConfig(){
+    public void setupConfig() {
         this.configManager.createConfig();
         config = getConfig();
-        if(Main.config.getBoolean("debug")) getLogger().info("Setting up config");
+        this.debug = Main.config.getBoolean("debug");
+        debugLogger("Setting up config");
     }
 
-    protected void setupListeners(){
+    protected void setupListeners() {
         getServer().getPluginManager().registerEvents(new PlayerTeleportEventListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(this), this);
-        if(Main.config.getBoolean("debug")) getLogger().info("Setting up listeners");
+        debugLogger("Setting up listeners");
+        // Check if the MVPortals is loaded and then add an event handler for it
+        try {
+            Class cls = Class.forName("com.onarandombox.MultiversePortals.event.MVPortalEvent");
+            debugLogger("MVPortals is loaded");
+            getServer().getPluginManager().registerEvents(new MVPortalsListener(this), this);
+        } catch (ClassNotFoundException e) {
+            debugLogger("MVPortals is not loaded");
+        }
     }
 
-    protected void setupCommands(){
+    protected void setupCommands() {
         this.getCommand("stayput").setExecutor(new StayputCommand(this));
     }
 
-    protected void setupDatabase(){
+    protected void setupDatabase() {
         // SQLite setup
         if (Main.config.getString("type").equals("sqlite")) {
             try {
@@ -129,10 +145,10 @@ public class Main extends JavaPlugin {
         } else {
             getLogger().warning("Invalid database connection type chosen!");
         }
-        if (Main.config.getBoolean("debug")) getLogger().info("Setting up database");
+        debugLogger("Setting up database");
     }
 
-    protected void setupDao(){
+    protected void setupDao() {
         positionMapper = null;
         try {
             positionMapper = DaoManager.createDao(connectionSource, Position.class);
@@ -147,7 +163,7 @@ public class Main extends JavaPlugin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(Main.config.getBoolean("debug")) getLogger().info("Setting up tables");
+        debugLogger("Setting up tables");
     }
 
     protected void syncPlayersToDatabase(){
@@ -156,6 +172,12 @@ public class Main extends JavaPlugin {
             if(player.hasPermission("stayput.use")) {
                 this.getPositionRepository().updateLocationForPlayer(player, player.getLocation());
             }
+        }
+    }
+
+    public void debugLogger(String message) {
+        if (this.debug) {
+            getLogger().info(message);
         }
     }
 

@@ -20,7 +20,6 @@ public class PlayerQuitEventListener implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent quitEvent) {
         Player who = quitEvent.getPlayer();
-        this.plugin.getLogger().info("Saving " + who.getDisplayName() + "'s location");
         this.plugin.getPositionRepository().updateLocationForPlayer(who, who.getLocation());
     }
 }

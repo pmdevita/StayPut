@@ -44,11 +44,13 @@
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
             <version>4.1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.onarandombox.multiverseportals</groupId>
             <artifactId>Multiverse-Portals</artifactId>
             <version>4.1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -64,12 +66,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>com.onarandombox.multiversecore</exclude>
-                                    <exclude>com.onarandombox.multiverseportals</exclude>
-                                </excludes>
-                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>

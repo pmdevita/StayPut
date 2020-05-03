@@ -39,7 +39,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.23" level="project" />
     <orderEntry type="library" name="Maven: com.j256.ormlite:ormlite-core:5.1" level="project" />
     <orderEntry type="library" name="Maven: com.j256.ormlite:ormlite-jdbc:5.1" level="project" />
-    <orderEntry type="library" name="Maven: com.onarandombox.multiversecore:Multiverse-Core:4.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.onarandombox.multiverseportals:Multiverse-Portals:4.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.onarandombox.multiversecore:Multiverse-Core:4.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.onarandombox.multiverseportals:Multiverse-Portals:4.1.0" level="project" />
   </component>
 </module>

@@ -1,5 +1,7 @@
 # StayPut Remixed
 
+[Spigot Plugin Page](https://www.spigotmc.org/resources/stayput-remixed.69564/)
+
 Return to your last location when teleporting back to a multiverse world
 
 The Bukkit/Spigot Multiverse plugin always sends you to a world's spawn when teleporting to it.

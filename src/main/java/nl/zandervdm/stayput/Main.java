@@ -2,10 +2,14 @@ package nl.zandervdm.stayput;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.j256.ormlite.db.MysqlDatabaseType;
+import com.j256.ormlite.logger.LoggerFactory.LogType;
+import com.j256.ormlite.logger.LocalLog;
 import nl.zandervdm.stayput.Commands.StayputCommand;
 import nl.zandervdm.stayput.Listeners.MVPortalsListener;
 import nl.zandervdm.stayput.Listeners.PlayerQuitEventListener;
@@ -57,6 +61,7 @@ public class Main extends JavaPlugin {
         setupDatabase();
         setupDao();
         setupTables();
+        dbMigration();
     }
 
     @Override
@@ -113,6 +118,15 @@ public class Main extends JavaPlugin {
     }
 
     protected void setupDatabase() {
+        // Force ormlite to use internal log even if slf4j exists (v10Lift) (#4)
+        System.setProperty("com.j256.ormlite.logger.type", LogType.LOCAL.toString());
+        // Make ormlite shut up if not in debug mode
+        String logLevel = "ERROR";
+        if (this.debug) {
+            logLevel = "INFO";
+        }
+        System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, logLevel);
+
         // SQLite setup
         if (Main.config.getString("type").equals("sqlite")) {
             try {
@@ -172,6 +186,13 @@ public class Main extends JavaPlugin {
             if(player.hasPermission("stayput.use")) {
                 this.getPositionRepository().updateLocationForPlayer(player, player.getLocation());
             }
+        }
+    }
+
+    protected void dbMigration() {
+        DatabaseType dbType = positionMapper.getConnectionSource().getDatabaseType();
+        if (dbType instanceof MysqlDatabaseType) {
+            positionRepository.deleteDuplicates();
         }
     }
 

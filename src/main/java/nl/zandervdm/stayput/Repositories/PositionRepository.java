@@ -84,4 +84,17 @@ public class PositionRepository {
 
         return new Location(world, coordX, coordY, coordZ, yaw, pitch);
     }
+
+    // Function to delete duplicates created by versions <1.2
+    public void deleteDuplicates() {
+        try {
+            this.plugin.getPositionMapper().executeRaw(
+                    "delete from stayput_position where id not in " +
+                            "(select MIN(id) from stayput_position group by uuid, world_name);"
+            );
+            this.plugin.debugLogger("Deleted duplicates!");
+        } catch (SQLException e) {
+            this.plugin.debugLogger("Couldn't delete duplicates");
+        }
+    }
 }

@@ -2,12 +2,10 @@ package nl.zandervdm.stayput;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.j256.ormlite.db.MysqlDatabaseType;
 import com.j256.ormlite.logger.LoggerFactory.LogType;
 import com.j256.ormlite.logger.LocalLog;
 import nl.zandervdm.stayput.Commands.StayputCommand;
@@ -67,6 +65,10 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         syncPlayersToDatabase();
+    }
+
+    public ConnectionSource getConnectionSource() {
+        return this.connectionSource;
     }
 
     public Dao<Position, Integer> getPositionMapper() {
@@ -143,9 +145,9 @@ public class Main extends JavaPlugin {
                 e.printStackTrace();
             }
         // MySQL Setup
-        } else if(Main.config.getString("type").equals("mysql")) {
+        } else if (Main.config.getString("type").equals("mysql")) {
             String host = Main.config.getString("mysql.host");
-            Integer port = Main.config.getInt("mysql.port");
+            int port = Main.config.getInt("mysql.port");
             String database = Main.config.getString("mysql.database");
             String username = Main.config.getString("mysql.username");
             String password = Main.config.getString("mysql.password");
@@ -180,20 +182,19 @@ public class Main extends JavaPlugin {
         debugLogger("Setting up tables");
     }
 
-    protected void syncPlayersToDatabase(){
+    protected void syncPlayersToDatabase() {
         Collection<? extends Player> players = getServer().getOnlinePlayers();
-        for(Player player : players){
-            if(player.hasPermission("stayput.use")) {
-                this.getPositionRepository().updateLocationForPlayer(player, player.getLocation());
-            }
+        for(Player player : players) {
+            teleport.handleTeleport(player, player.getLocation(), null);
         }
     }
 
     protected void dbMigration() {
-        DatabaseType dbType = positionMapper.getConnectionSource().getDatabaseType();
-        if (dbType instanceof MysqlDatabaseType) {
-            positionRepository.deleteDuplicates();
-        }
+//        DatabaseType dbType = positionMapper.getConnectionSource().getDatabaseType();
+//        if (dbType instanceof MysqlDatabaseType) {
+//            positionRepository.deleteDuplicates();
+//        }
+        positionRepository.doMigrations();
     }
 
     public void debugLogger(String message) {

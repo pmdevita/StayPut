@@ -1,6 +1,5 @@
 package nl.zandervdm.stayput;
 
-import com.onarandombox.MultiverseCore.api.MVDestination;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -29,34 +28,42 @@ public class Teleport {
         this.plugin = plugin;
     }
 
-    public boolean handleTeleport(Player player, Location from, MVDestination destination, boolean isPortal) {
-        this.plugin.debugLogger(String.format("Player%sEvent activated", isPortal ? "Portal" : "Teleport"));
 
-        if (!this.plugin.getRuleManager().shouldUpdateLocation(player, from, destination.getLocation(player))){
-            return false;
+    public Location handleTeleport(Player player, Location from, Location to) {
+//        Location toLocation = null;
+//        if (destination != null) {
+//            toLocation = destination.getLocation(player);
+//        }
+
+        // Determine if we should update this player's now previous location
+        if (this.plugin.getRuleManager().shouldUpdateLocation(player, from, to)) {
+            this.plugin.getPositionRepository().updateLocationForPlayer(player, from);
+        } else {
+            // If we don't need to record position, we aren't going anywhere so return
+            return null;
         }
 
-        //We should always update the previous location for the previous world for this player because at this point
-        //he left the previous world
-        this.plugin.getPositionRepository().updateLocationForPlayer(player, from);
+        // Determine if we should teleport the player and if we should, get the new Location
+        if (to != null) {
 
-        Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, from, destination.getLocation(player));
+            Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, to);
 
-        if (previousLocation != null) {
-            if (this.isPressurePlate(previousLocation)) {
-                // Find a valid spot around the location
-                Location newLocation = this.findAvailableLocation(previousLocation);
-                if (newLocation != null) previousLocation = newLocation;
+            if (previousLocation != null) {
+                if (this.isPressurePlate(previousLocation)) {
+                    // Find a valid spot around the location
+                    Location newLocation = this.findAvailableLocation(previousLocation);
+                    if (newLocation != null) previousLocation = newLocation;
+                }
+
+                //There is a location, and the player should teleport, so teleport him
+                this.plugin.debugLogger("Teleporting player to his previous location");
+//                ourTeleports.add(new TeleportData(player, previousLocation));
+//                player.teleport(previousLocation);
+
+                return previousLocation;    // We teleported the player ourselves, cancel the event's teleport
             }
-
-            //There is a location, and the player should teleport, so teleport him
-            this.plugin.debugLogger("Teleporting player to his previous location");
-
-            player.teleport(previousLocation);
-            return true;
         }
-
-        return false;
+        return null; // We didn't teleport the player ourselves, let the event continue normally
     }
 
     protected boolean isPressurePlate(Location toLocation) {

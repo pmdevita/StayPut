@@ -4,7 +4,6 @@ import nl.zandervdm.stayput.Main;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -18,8 +17,9 @@ public class PlayerQuitEventListener implements Listener {
 
     // Save a player's location once they leave the server
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent quitEvent) {
-        Player who = quitEvent.getPlayer();
-        this.plugin.getPositionRepository().updateLocationForPlayer(who, who.getLocation());
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        this.plugin.debugLogger("onPlayerQuitEvent");
+        Player who = event.getPlayer();
+        this.plugin.getTeleport().handleTeleport(who, who.getLocation(), null);
     }
 }

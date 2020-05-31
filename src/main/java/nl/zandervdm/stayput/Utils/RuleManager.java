@@ -58,9 +58,19 @@ public class RuleManager {
         }
 
         // If we are teleporting to a defined location in a world, then it is a directed teleport and we shouldn't touch it
-        if (toLocation.equals(toLocation.getWorld().getSpawnLocation())) {
+        Location to = toLocation.clone();
+        Location spawn = to.getWorld().getSpawnLocation();
+        // For some dumbass reason, toLocation can have a null world which thwarts what should have been an easy equals check
+        // But you can get the world from it. But you can't set the world to be anything but null.
+        // Why would you do this to me
+        if (to.getX() == spawn.getX() && to.getY() == spawn.getY() && to.getZ() == spawn.getZ() &&
+                to.getPitch() == spawn.getPitch() && to.getYaw() == spawn.getYaw()) {
+            this.plugin.debugLogger("Appears to be a teleport to world spawn, redirecting");
+            this.plugin.debugLogger(to.toString() + " == " + to.getWorld().getSpawnLocation().toString());
+        } else {
             this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world");
-            this.plugin.debugLogger(toLocation.toString() + " != " + toLocation.getWorld().getSpawnLocation().toString());
+            this.plugin.debugLogger(to.toString() + " != " + to.getWorld().getSpawnLocation().toString());
+            return null;
         }
 
         // In any other case, find the previous spot of the user in this world

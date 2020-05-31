@@ -13,7 +13,8 @@ public class MVPortalsListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerPortalEvent(MVPortalEvent event) {
+    public void onMVPortalEvent(MVPortalEvent event) {
+        this.plugin.debugLogger("onMVPortalEvent");
 //        Location newLocation = this.plugin.getTeleport().handleTeleport(event.getTeleportee(), event.getFrom(), event.getDestination().getLocation(event.getTeleportee()));
 //        if(newLocation != null) {
 //            event.setCancelled(true);

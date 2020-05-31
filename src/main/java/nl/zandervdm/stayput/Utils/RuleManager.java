@@ -65,7 +65,7 @@ public class RuleManager {
         // Why would you do this to me
         if (to.getX() == spawn.getX() && to.getY() == spawn.getY() && to.getZ() == spawn.getZ() &&
                 to.getPitch() == spawn.getPitch() && to.getYaw() == spawn.getYaw()) {
-            this.plugin.debugLogger("Appears to be a teleport to world spawn, redirecting");
+            this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
             this.plugin.debugLogger(to.toString() + " == " + to.getWorld().getSpawnLocation().toString());
         } else {
             this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world");

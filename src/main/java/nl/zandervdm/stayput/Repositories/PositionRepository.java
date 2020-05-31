@@ -105,22 +105,22 @@ public class PositionRepository {
         // First, delete duplicates
         this.deleteDuplicates();
         // Get the schema
-        try {
-            GenericRawResults<String[]> results = this.plugin.getPositionMapper().queryRaw(
-                    "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='stayput_position'"
-            );
-            List<String[]> resultsList = results.getResults();
-            this.plugin.debugLogger("Schema");
-            for (String[] i: resultsList) {
-                String wholeThing = "";
-                for (String j: i) {
-                    wholeThing = wholeThing + j + " ";
-                }
-                this.plugin.debugLogger(wholeThing);
-            }
-        } catch (SQLException e) {
-            this.plugin.debugLogger("Couldn't get schema");
-        }
+//        try {
+//            GenericRawResults<String[]> results = this.plugin.getPositionMapper().queryRaw(
+//                    "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='stayput_position'"
+//            );
+//            List<String[]> resultsList = results.getResults();
+//            this.plugin.debugLogger("Schema");
+//            for (String[] i: resultsList) {
+//                String wholeThing = "";
+//                for (String j: i) {
+//                    wholeThing = wholeThing + j + " ";
+//                }
+//                this.plugin.debugLogger(wholeThing);
+//            }
+//        } catch (SQLException e) {
+//            this.plugin.debugLogger("Couldn't get schema");
+//        }
 
     }
 }

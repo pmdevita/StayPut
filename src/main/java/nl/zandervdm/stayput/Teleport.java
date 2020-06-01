@@ -40,13 +40,13 @@ public class Teleport {
             this.plugin.getPositionRepository().updateLocationForPlayer(player, from);
         } else {
             // If we don't need to record position, we aren't going anywhere so return
-//            return null; // breaking blacklist worlds (#5)
+//            return null; // breaking blacklist worlds (#6)
         }
 
         // Determine if we should teleport the player and if we should, get the new Location
         if (to != null) {
-
-            Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, to);
+            this.plugin.debugLogger(player.getName() + ": " + from.getWorld().getName() + " --> " + to.getWorld().getName());
+            Location previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, from, to);
 
             if (previousLocation != null) {
                 if (this.isPressurePlate(previousLocation)) {

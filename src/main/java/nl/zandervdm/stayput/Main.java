@@ -15,6 +15,7 @@ import nl.zandervdm.stayput.Listeners.PlayerTeleportEventListener;
 import nl.zandervdm.stayput.Models.Position;
 import nl.zandervdm.stayput.Repositories.PositionRepository;
 import nl.zandervdm.stayput.Utils.ConfigManager;
+import nl.zandervdm.stayput.Utils.MVManager;
 import nl.zandervdm.stayput.Utils.RuleManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ public class Main extends JavaPlugin {
     protected ConfigManager configManager;
     protected RuleManager ruleManager;
     protected Teleport teleport;
+    protected MVManager multiverse;
 
     //Database connection stuff
     protected ConnectionSource connectionSource;
@@ -79,6 +81,8 @@ public class Main extends JavaPlugin {
         return this.positionRepository;
     }
 
+    public MVManager getMultiverse() { return this.multiverse; }
+
     public RuleManager getRuleManager() {
         return this.ruleManager;
     }
@@ -92,6 +96,7 @@ public class Main extends JavaPlugin {
         this.ruleManager = new RuleManager(this);
         this.positionRepository = new PositionRepository(this);
         this.teleport = new Teleport(this);
+        this.multiverse = new MVManager(this);
     }
 
     public void setupConfig() {

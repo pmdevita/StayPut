@@ -36,21 +36,21 @@ public class RuleManager {
         // If the worlds are the same, ignore
         if (toWorld != null) {
             if (fromWorld.equals(toWorld)) {
-                this.plugin.debugLogger("Not saving location because world was not switched");
+                this.plugin.debugLogger("Not saving location because player did not jump worlds");
                 return false;
             }
         }
 
         // If the world we are teleporting from is inside the configs blacklist, ignore
         if (this.worldIsBlacklisted(fromWorld)) {
-            this.plugin.debugLogger("Not saving location because this world is blacklisted");
+            this.plugin.debugLogger("Not saving location because " + fromWorld.getName() + " is blacklisted");
             return false;
         }
 
         return true;
     }
 
-    public Location shouldTeleportPlayer(Player player, Location toLocation) {
+    public Location shouldTeleportPlayer(Player player, Location from, Location toLocation) {
         World toWorld = toLocation.getWorld();
 
         // If this world is inside the configs blacklist, ignore
@@ -59,19 +59,32 @@ public class RuleManager {
             return null;
         }
 
+        // If we didn't change worlds, ignore the teleport
+        if (from.getWorld().equals(toLocation.getWorld())) {
+            this.plugin.debugLogger("Not redirecting teleport because player did not jump worlds");
+            return null;
+        }
+
         // If we are teleporting to a defined location in a world, then it is a directed teleport and we shouldn't touch it
-        Location to = toLocation.clone();
-        Location spawn = to.getWorld().getSpawnLocation();
+//        Location to = toLocation.clone();
+//        Location spawn = to.getWorld().getSpawnLocation();
+        Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
+
+//        Location MVSpawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
+//        this.plugin.debugLogger("MVSpawn is " + MVSpawn.toString());
+
         // For some dumbass reason, toLocation can have a null world which thwarts what should have been an easy equals check
         // But you can get the world from it. But you can't set the world to be anything but null.
         // Why would you do this to me
-        if (to.getX() == spawn.getX() && to.getY() == spawn.getY() && to.getZ() == spawn.getZ() &&
-                to.getPitch() == spawn.getPitch() && to.getYaw() == spawn.getYaw()) {
+        // Turns out its a Multiverse SpawnLocation which subclasses Location and allows for weird world properties
+
+
+        if (toLocation.equals(spawn)) {
             this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
-            this.plugin.debugLogger(to.toString() + " == " + to.getWorld().getSpawnLocation().toString());
+            this.plugin.debugLogger(toLocation.toString() + " == " + spawn.toString());
         } else {
             this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world");
-            this.plugin.debugLogger(to.toString() + " != " + to.getWorld().getSpawnLocation().toString());
+            this.plugin.debugLogger(toLocation.toString() + " != " + spawn.toString());
             return null;
         }
 

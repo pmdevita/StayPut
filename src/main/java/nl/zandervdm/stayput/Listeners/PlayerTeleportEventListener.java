@@ -5,6 +5,7 @@ import nl.zandervdm.stayput.Main;
 import nl.zandervdm.stayput.Teleport;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -20,7 +21,8 @@ public class PlayerTeleportEventListener implements Listener {
 
     @EventHandler
     public void onPlayerMVTeleportEvent(MVTeleportEvent event) {
-        this.plugin.debugLogger("onPlayerMVTeleportEvent");
+        this.plugin.debugLogger("onPlayerMVTeleportEvent " + event.getDestination().getType() + " "
+                + event.getDestination().getLocation(event.getTeleportee()).toString());
 //        if (this.plugin.getTeleport().handleTeleport(event.getTeleportee(), event.getFrom(), event.getDestination().getLocation(event.getTeleportee())))
 //            event.setCancelled(true);
     }
@@ -31,7 +33,7 @@ public class PlayerTeleportEventListener implements Listener {
         if (cause.equals(PlayerTeleportEvent.TeleportCause.COMMAND) ||
                 cause.equals(PlayerTeleportEvent.TeleportCause.PLUGIN) || cause.equals(PlayerTeleportEvent.TeleportCause.UNKNOWN))
         {
-            this.plugin.debugLogger("onPlayerTeleportEvent");
+            this.plugin.debugLogger("onPlayerTeleportEvent " + cause.toString());
             Location newLocation = this.plugin.getTeleport().handleTeleport(event.getPlayer(), event.getFrom(), event.getTo());
             if (newLocation != null) {
                 event.setTo(newLocation);

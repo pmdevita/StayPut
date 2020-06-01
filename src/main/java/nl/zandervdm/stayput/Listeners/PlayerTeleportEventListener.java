@@ -2,15 +2,10 @@ package nl.zandervdm.stayput.Listeners;
 
 import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import nl.zandervdm.stayput.Main;
-import nl.zandervdm.stayput.Teleport;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class PlayerTeleportEventListener implements Listener {
     protected Main plugin;

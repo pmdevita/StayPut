@@ -1,7 +1,7 @@
 package nl.zandervdm.stayput.Listeners;
+
 import com.onarandombox.MultiversePortals.event.MVPortalEvent;
 import nl.zandervdm.stayput.Main;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

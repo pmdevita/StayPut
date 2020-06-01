@@ -2,13 +2,10 @@ package nl.zandervdm.stayput.Utils;
 
 import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashSet;
-import java.util.List;
 
 public class RuleManager {
 

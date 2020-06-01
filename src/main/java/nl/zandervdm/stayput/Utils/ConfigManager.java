@@ -1,7 +1,5 @@
 package nl.zandervdm.stayput.Utils;
-
 import nl.zandervdm.stayput.Main;
-
 import java.io.File;
 
 public class ConfigManager {

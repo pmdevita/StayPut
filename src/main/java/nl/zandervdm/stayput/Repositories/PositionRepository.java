@@ -1,6 +1,5 @@
 package nl.zandervdm.stayput.Repositories;
 
-import com.j256.ormlite.dao.GenericRawResults;
 import nl.zandervdm.stayput.Main;
 import nl.zandervdm.stayput.Models.Position;
 import org.bukkit.Location;
@@ -8,8 +7,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PositionRepository {
 

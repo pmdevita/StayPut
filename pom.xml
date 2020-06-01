@@ -8,7 +8,7 @@
     </properties>
     <groupId>nl.zandervdm.stayput</groupId>
     <artifactId>StayPut</artifactId>
-    <version>1.3.2a-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
 
     <repositories>
         <repository>

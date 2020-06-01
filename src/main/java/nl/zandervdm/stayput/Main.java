@@ -52,8 +52,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable(){
-        setupClasses();
         setupConfig();
+        setupClasses();
         setupListeners();
         setupCommands();
         setupDatabase();
@@ -95,10 +95,10 @@ public class Main extends JavaPlugin {
     }
 
     public void setupConfig() {
-        this.configManager.createConfig();
+        this.saveDefaultConfig();
         config = getConfig();
-        this.debug = Main.config.getBoolean("debug");
-        debugLogger("Setting up config");
+        this.debug = this.getConfig().getBoolean("debug");
+        debugLogger("Debug mode enabled");
     }
 
     protected void setupListeners() {

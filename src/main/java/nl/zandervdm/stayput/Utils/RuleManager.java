@@ -13,9 +13,11 @@ import java.util.List;
 public class RuleManager {
 
     protected Main plugin;
+    HashSet<String> blacklistedWorlds;
 
     public RuleManager(Main plugin) {
         this.plugin = plugin;
+        blacklistedWorlds = new HashSet<>(this.plugin.getConfig().getStringList("blacklisted-worlds"));
     }
 
     public boolean shouldUpdateLocation(Player player, Location fromLocation, Location toLocation) {
@@ -86,7 +88,6 @@ public class RuleManager {
     }
 
     public boolean worldIsBlacklisted(World world) {
-        HashSet<String> blacklistedWorlds = new HashSet<String>(Main.config.getStringList("blacklisted-worlds"));
         return blacklistedWorlds.contains(world.getName());
     }
 }

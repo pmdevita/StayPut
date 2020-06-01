@@ -8,12 +8,11 @@ mysql:
     username: "root"
     password: ""
 
-# Blacklisted worlds, which worlds should be excluded from the teleport actions? Default: []
+# Blacklisted worlds, which worlds should be excluded from the teleport actions?
 # Example layout
 # blacklisted-worlds:
-#     - world
-#     - world_nether
-blacklisted-worlds: []
+#  - world
+#  - world_nether
 
 # Want to debug and see why certain actions are (not) executed? Set this to true. Default: false
 debug: false

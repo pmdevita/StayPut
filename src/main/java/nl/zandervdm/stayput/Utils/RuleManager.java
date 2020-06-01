@@ -65,7 +65,7 @@ public class RuleManager {
         // If we are teleporting to a defined location in a world, then it is a directed teleport and we shouldn't touch it
 //        Location to = toLocation.clone();
 //        Location spawn = to.getWorld().getSpawnLocation();
-        Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
+        Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(toLocation.getWorld()).getSpawnLocation();
 
 //        Location MVSpawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
 //        this.plugin.debugLogger("MVSpawn is " + MVSpawn.toString());

@@ -22,7 +22,7 @@ class MySQL(plugin: Main) : BaseDatabase(plugin) {
     }
 
     private fun getDatabaseFromConfig() : String {
-        val database = plugin.config.getString("mysql.database") ?: throw java.lang.Exception("MySQL/MariaDB database not defined.")
+        val database = plugin.config.getString("database.database") ?: throw java.lang.Exception("MySQL/MariaDB database not defined.")
         plugin.debugLogger("database in config is $database ")
         if (!isValidSQLIdentifier(database)) {
             throw Exception("MySQL/MariaDB database name is not alphanumeric/underscore.")

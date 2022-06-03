@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class RuleManager {
 
@@ -90,6 +91,13 @@ public class RuleManager {
             this.plugin.debugLogger(toLocation.toString() + " != " + spawn.toString());
             return null;
         }
+
+        // If this is a teleport inside a world group, ignore it
+        if (Objects.equals(plugin.getConfigManager().getWorldGroup(from.getWorld()), plugin.getConfigManager().getWorldGroup(toLocation.getWorld()))) {
+            this.plugin.debugLogger("Teleport within world group, not redirecting");
+            return null;
+        }
+
 
         // In any other case, find the previous spot of the user in this world
         PlayerLocation previousLocation = this.plugin.getDatabase().getLocation(player, toWorld);

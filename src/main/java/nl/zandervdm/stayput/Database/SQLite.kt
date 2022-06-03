@@ -8,6 +8,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 class SQLite(plugin: Main) : BaseDatabase(plugin) {
+    override val SCHEMA_VERSION = 2
+
     override fun getConnection(): Connection {
         val fileName = plugin.config.getString("database.filename", "database.db")
         val file = File(plugin.dataFolder, fileName!!)
@@ -86,7 +88,7 @@ class SQLite(plugin: Main) : BaseDatabase(plugin) {
 
 }
 
-const val SQLITE_SCHEMA_VERSION_1 = "CREATE TABLE `stayput_position` (" +
+const val SQLITE_SCHEMA_VERSION_1 = "CREATE TABLE \"%s\" (" +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT , " +
         "`uuid` VARCHAR , " +
         "`player_name` VARCHAR , " +
@@ -97,7 +99,7 @@ const val SQLITE_SCHEMA_VERSION_1 = "CREATE TABLE `stayput_position` (" +
         "`yaw` FLOAT , " +
         "`pitch` FLOAT )"
 
-const val SQLITE_SCHEMA_VERSION_2 = "CREATE TABLE 'stayput_position' (" +
+const val SQLITE_SCHEMA_VERSION_2 = "CREATE TABLE '%s' (" +
         "`uuid` varchar(36) NOT NULL, " +
         "`world_group` varchar(50) NOT NULL, " +
         "`world` tinytext NOT NULL, " +

@@ -1,9 +1,9 @@
 # Database type you want to use. Default: sqlite
 # If your database type has been set to mysql fill out these details
 database:
-    type: sqlite
+    type: "sqlite"
     # If you are using sqlite, give the file name here
-    filename: "stayput.db"
+    filename: "database.db"
     # If you are using MySQL/MariaDB, provide connection info here
     host: "localhost"
     port: 3306

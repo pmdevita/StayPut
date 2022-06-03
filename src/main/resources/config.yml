@@ -1,8 +1,8 @@
-# Database type you want to use. Default: sqlite
-# If your database type has been set to mysql fill out these details
+# Database configuration
 database:
+    # Type: sqlite (default), mysql, or mariadb
     type: "sqlite"
-    # If you are using sqlite, give the file name here
+    # If you are using sqlite, you can configure the filename here (default: database.db)
     filename: "database.db"
     # If you are using MySQL/MariaDB, provide connection info here
     host: "localhost"

@@ -1,5 +1,6 @@
 package nl.zandervdm.stayput.Utils;
 
+import nl.zandervdm.stayput.Database.PlayerLocation;
 import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -47,8 +48,13 @@ public class RuleManager {
         return true;
     }
 
-    public Location shouldTeleportPlayer(Player player, Location from, Location toLocation) {
+    public PlayerLocation shouldTeleportPlayer(Player player, Location from, Location toLocation) {
         World toWorld = toLocation.getWorld();
+
+        if (toWorld == null || from.getWorld() == null) {
+            this.plugin.debugLogger("shouldTeleporPlayer was given locations with null world values???");
+            return null;
+        }
 
         // If this world is inside the configs blacklist, ignore
         if (this.worldIsBlacklisted(toWorld)) {
@@ -62,7 +68,7 @@ public class RuleManager {
             return null;
         }
 
-        // If we are teleporting to a defined location in a world, then it is a directed teleport and we shouldn't touch it
+        // If we are teleporting to a defined location in a world, then it is a directed teleport, and we shouldn't touch it
 //        Location to = toLocation.clone();
 //        Location spawn = to.getWorld().getSpawnLocation();
         Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(toLocation.getWorld()).getSpawnLocation();
@@ -80,13 +86,13 @@ public class RuleManager {
             this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
             this.plugin.debugLogger(toLocation.toString() + " == " + spawn.toString());
         } else {
-            this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world");
+            this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world. (If this was supposed to be redirected, there may be some confusion about the spawn location between the vanilla server and plugins.)");
             this.plugin.debugLogger(toLocation.toString() + " != " + spawn.toString());
             return null;
         }
 
         // In any other case, find the previous spot of the user in this world
-        Location previousLocation = this.plugin.getPositionRepository().getPreviousLocation(player, toWorld);
+        PlayerLocation previousLocation = this.plugin.getDatabase().getLocation(player, toWorld);
 
         // If there is no previous location for this world, just ignore it
         if (previousLocation == null) {

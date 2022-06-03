@@ -1,12 +1,15 @@
 # Database type you want to use. Default: sqlite
-type: sqlite
 # If your database type has been set to mysql fill out these details
-mysql:
+database:
+    type: sqlite
+    # If you are using sqlite, give the file name here
+    filename: "stayput.db"
+    # If you are using MySQL/MariaDB, provide connection info here
     host: "localhost"
     port: 3306
-    database: "stay_put"
-    username: "root"
-    password: ""
+    database: "database"
+    username: "username"
+    password: "password"
 
 # Blacklisted worlds, which worlds should be excluded from the teleport actions?
 # Example layout

@@ -16,4 +16,9 @@ public class MVManager {
             main.getLogger().severe("StayPut loaded but Multiverse did not, something is wrong.");
         }
     }
+
+    public boolean loadedMultiverse() {
+        return this.core != null;
+    }
+
 }

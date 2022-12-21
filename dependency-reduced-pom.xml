@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.zandervdm.stayput</groupId>
   <artifactId>StayPut</artifactId>
-  <version>2.0.0b</version>
+  <version>2.0.0</version>
   <build>
     <plugins>
       <plugin>

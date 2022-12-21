@@ -1,5 +1,5 @@
 name: StayPut
-version: 2.0.0b
+version: 2.0.0
 api-version: 1.13
 author: Zander van der Meer
 main: nl.zandervdm.stayput.Main

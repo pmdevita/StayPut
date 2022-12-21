@@ -88,7 +88,7 @@ class SQLite(plugin: Main) : BaseDatabase(plugin) {
 
 }
 
-const val SQLITE_SCHEMA_VERSION_1 = "CREATE TABLE \"%s\" (" +
+const val SQLITE_SCHEMA_VERSION_1 = "CREATE TABLE `%s` (" +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT , " +
         "`uuid` VARCHAR , " +
         "`player_name` VARCHAR , " +

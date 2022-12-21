@@ -16,10 +16,15 @@ public class PlayerTeleportEventListener implements Listener {
 
     @EventHandler
     public void onPlayerMVTeleportEvent(MVTeleportEvent event) {
-        this.plugin.debugLogger("onPlayerMVTeleportEvent " + event.getDestination().getType() + " "
-                + event.getDestination().getLocation(event.getTeleportee()).toString());
-//        if (this.plugin.getTeleport().handleTeleport(event.getTeleportee(), event.getFrom(), event.getDestination().getLocation(event.getTeleportee())))
-//            event.setCancelled(true);
+        Location location = event.getDestination().getLocation(event.getTeleportee());
+
+        if (location == null) {
+            this.plugin.debugLogger("onPlayerMVTeleportEvent " + event.getDestination().getType()
+                    + " Destination location is null apparently?");
+        } else {
+            this.plugin.debugLogger("onPlayerMVTeleportEvent " + event.getDestination().getType() + " "
+                    + location);
+        }
     }
 
     @EventHandler

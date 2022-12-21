@@ -100,17 +100,6 @@ class MySQL(plugin: Main) : BaseDatabase(plugin) {
         return location
     }
 
-
-    override fun setLocation(location: PlayerLocation) {
-        val stmt = conn.createStatement()
-        assert(location.location.world != null)
-        val query = "replace into $table (uuid, world_group, world, x, y, z, yaw, pitch) " +
-                "values ('${location.player.uniqueId}', '${escapeString(location.group)}', '${escapeString(location.location.world!!.name)}', ${location.location.x}, ${location.location.y}, ${location.location.z}, ${location.location.yaw}, ${location.location.pitch});"
-        stmt.executeUpdate(query)
-        plugin.debugLogger("Set location for ${location.player.name}!")
-    }
-
-
 }
 
 const val MYSQL_SCHEMA_VERSION_1 = "CREATE TABLE `%s` (\n" +

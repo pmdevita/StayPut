@@ -101,4 +101,12 @@ open class BaseDatabase(val plugin: Main) {
         plugin.debugLogger("Set location for ${location.player.name}!")
     }
 
+    open fun deleteLocation(player: Player, world: World) {
+        val stmt = conn.createStatement()
+        val query = "delete from $table where uuid = '${player.uniqueId}' " +
+                "and world_group = '${escapeString(plugin.configManager.getWorldGroup(world))}'"
+        stmt.executeUpdate(query)
+        plugin.debugLogger("Deleted location for ${player.name} in world ${world.name}")
+    }
+
 }

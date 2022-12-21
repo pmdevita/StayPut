@@ -10,6 +10,7 @@ package nl.zandervdm.stayput;
 import nl.zandervdm.stayput.Commands.StayputCommand;
 import nl.zandervdm.stayput.Database.BaseDatabase;
 import nl.zandervdm.stayput.Listeners.MVPortalsListener;
+import nl.zandervdm.stayput.Listeners.PlayerDeathEventListener;
 import nl.zandervdm.stayput.Listeners.PlayerQuitEventListener;
 import nl.zandervdm.stayput.Listeners.PlayerTeleportEventListener;
 import nl.zandervdm.stayput.Utils.ConfigManager;
@@ -95,9 +96,10 @@ public class Main extends JavaPlugin {
     }
 
     protected void setupListeners() {
+        debugLogger("Setting up listeners");
         getServer().getPluginManager().registerEvents(new PlayerTeleportEventListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(this), this);
-        debugLogger("Setting up listeners");
+        getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(this), this);
         // Check if the MVPortals is loaded and then add an event handler for it
         Plugin plugin = getServer().getPluginManager().getPlugin("Multiverse-Portals");
 

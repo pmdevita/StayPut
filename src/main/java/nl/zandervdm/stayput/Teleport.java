@@ -32,20 +32,11 @@ public class Teleport {
 
 
     public Location handleTeleport(Player player, Location from, Location to) {
-//        Location toLocation = null;
-//        if (destination != null) {
-//            toLocation = destination.getLocation(player);
-//        }
-
         // Determine if we should update this player's now previous location
         if (this.plugin.getRuleManager().shouldUpdateLocation(player, from, to) && from.getWorld() != null) {
-//            this.plugin.getPositionRepository().updateLocationForPlayer(player, from);
             PlayerLocation currentLocation = new PlayerLocation(player, plugin.configManager.getWorldGroup(from.getWorld()), from);
             this.plugin.getDatabase().setLocation(currentLocation);
-        } // else {
-            // If we don't need to record position, we aren't going anywhere so return
-//            return null; // breaking blacklist worlds (#6)
-    //    }
+        }
 
         // Determine if we should teleport the player and if we should, get the new Location
         if (to != null) {

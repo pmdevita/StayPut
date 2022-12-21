@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.event.MVTeleportEvent;
 import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -27,7 +28,7 @@ public class PlayerTeleportEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
         if (cause.equals(PlayerTeleportEvent.TeleportCause.COMMAND) ||

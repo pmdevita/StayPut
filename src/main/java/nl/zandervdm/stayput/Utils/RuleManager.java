@@ -71,9 +71,9 @@ public class RuleManager {
 
         // If we are teleporting to a defined location in a world, then it is a directed teleport, and we shouldn't touch it
 //        Location to = toLocation.clone();
-//        Location spawn = to.getWorld().getSpawnLocation();
+        Location vanillaSpawn = toLocation.getWorld().getSpawnLocation();
         Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(toLocation.getWorld()).getSpawnLocation();
-
+        this.plugin.debugLogger("Vanilla Spawn: " + vanillaSpawn.toString() + " MV Spawn: " + spawn.toString());
 //        Location MVSpawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
 //        this.plugin.debugLogger("MVSpawn is " + MVSpawn.toString());
 
@@ -85,10 +85,10 @@ public class RuleManager {
 
         if (toLocation.equals(spawn)) {
             this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
-            this.plugin.debugLogger(toLocation.toString() + " == " + spawn.toString());
+            this.plugin.debugLogger(toLocation + " == " + spawn);
         } else {
             this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world. (If this was supposed to be redirected, there may be some confusion about the spawn location between the vanilla server and plugins.)");
-            this.plugin.debugLogger(toLocation.toString() + " != " + spawn.toString());
+            this.plugin.debugLogger(toLocation + " != " + spawn);
             return null;
         }
 

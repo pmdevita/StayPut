@@ -31,7 +31,7 @@ open class BaseDatabase(val plugin: Main) {
     }
 
     fun isValidSQLIdentifier(s: String): Boolean {
-        val p = Pattern.compile("^[a-zA-Z_]{1,255}\$")
+        val p = Pattern.compile("^[a-zA-Z0-9_]{1,255}\$")
         return p.matcher(s).matches()
     }
 

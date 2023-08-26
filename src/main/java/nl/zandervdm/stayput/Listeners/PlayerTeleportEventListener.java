@@ -32,7 +32,7 @@ public class PlayerTeleportEventListener implements Listener {
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
         if (cause.equals(PlayerTeleportEvent.TeleportCause.COMMAND) ||
-                cause.equals(PlayerTeleportEvent.TeleportCause.PLUGIN) || cause.equals(PlayerTeleportEvent.TeleportCause.UNKNOWN))
+                cause.equals(PlayerTeleportEvent.TeleportCause.PLUGIN))
         {
             this.plugin.debugLogger("onPlayerTeleportEvent " + cause.toString());
             Location newLocation = this.plugin.getTeleport().handleTeleport(event.getPlayer(), event.getFrom(), event.getTo());

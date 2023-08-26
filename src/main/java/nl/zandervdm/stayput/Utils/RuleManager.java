@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -17,6 +18,7 @@ public class RuleManager {
     public RuleManager(Main plugin) {
         this.plugin = plugin;
         blacklistedWorlds = new HashSet<>(this.plugin.getConfig().getStringList("blacklisted-worlds"));
+        plugin.debugLogger("Loaded blacklisted worlds " + Arrays.toString(blacklistedWorlds.toArray()));
     }
 
     public boolean shouldUpdateLocation(Player player, Location fromLocation, Location toLocation) {

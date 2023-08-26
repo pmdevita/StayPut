@@ -1,12 +1,5 @@
 package nl.zandervdm.stayput;
 
-//import com.j256.ormlite.dao.Dao;
-//import com.j256.ormlite.dao.DaoManager;
-//import com.j256.ormlite.support.ConnectionSource;
-//import com.j256.ormlite.table.TableUtils;
-//import com.j256.ormlite.logger.LoggerFactory.LogType;
-//import com.j256.ormlite.logger.LocalLog;
-
 import nl.zandervdm.stayput.Commands.StayputCommand;
 import nl.zandervdm.stayput.Database.BaseDatabase;
 import nl.zandervdm.stayput.Listeners.MVPortalsListener;

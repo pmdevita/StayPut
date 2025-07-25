@@ -16,7 +16,7 @@ class MySQL(plugin: Main) : BaseDatabase(plugin) {
         val username = plugin.config.getString("database.username") ?: throw Exception("MySQL/MariaDB username not defined.")
         val password = plugin.config.getString("database.password") ?: throw Exception("MySQL/MariaDB password not defined.")
         val database = getDatabaseFromConfig()
-        val jdbcURL = "jdbc:mysql://$host:$port/$database?autoReconnect=true&enabledTLSProtocols=TLSv1.2"
+        val jdbcURL = "jdbc:mysql://$host:$port/$database"
         plugin.debugLogger("Using url $jdbcURL")
         return DriverManager.getConnection(jdbcURL, username, password)
     }

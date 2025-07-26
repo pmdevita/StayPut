@@ -4,6 +4,7 @@ import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -85,7 +86,13 @@ public class RuleManager {
 //        Location to = toLocation.clone();
         Location vanillaSpawn = toLocation.getWorld().getSpawnLocation();
 
-        Location spawn = this.plugin.getMultiverse().core.getWorldManager().getWorld(toLocation.getWorld()).get().getSpawnLocation();
+        MultiverseWorld world = this.plugin.getMultiverse().core.getWorldManager().getWorld(toLocation.getWorld()).getOrNull();
+        if (world == null) {
+            this.plugin.debugLogger("Could not find MultiverseWorld for world " + toLocation.getWorld());
+            return false;
+        }
+
+        Location spawn = world.getSpawnLocation();
         this.plugin.debugLogger("Vanilla Spawn: " + vanillaSpawn.toString() + " MV Spawn: " + spawn.toString());
 //        Location MVSpawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
 //        this.plugin.debugLogger("MVSpawn is " + MVSpawn.toString());

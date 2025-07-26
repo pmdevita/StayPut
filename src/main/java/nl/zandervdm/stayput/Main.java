@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Main extends JavaPlugin {
@@ -31,6 +32,8 @@ public class Main extends JavaPlugin {
 //    protected ConnectionSource connectionSource;
 
     protected BaseDatabase database;
+
+    private final ArrayList<PlayerTeleport> playerTeleports = new ArrayList<>();
 
     /**
      * Permissions:
@@ -73,6 +76,8 @@ public class Main extends JavaPlugin {
     public ConfigManager getConfigManager() { return this.configManager; }
 
     public BaseDatabase getDatabase() { return this.database; }
+
+    public ArrayList<PlayerTeleport> getPlayerTeleports() { return this.playerTeleports; }
 
     protected void setupClasses() {
         this.configManager = new ConfigManager(this);

@@ -1,21 +1,20 @@
 package nl.zandervdm.stayput.Utils;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import nl.zandervdm.stayput.Main;
-import org.bukkit.plugin.Plugin;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 public class MVManager {
-    MultiverseCore core;
+    MultiverseCoreApi core;
     public MVManager(Main main) {
-        Plugin plugin = main.getServer().getPluginManager().getPlugin("Multiverse-Core");
-
-        if (plugin instanceof MultiverseCore) {
-            this.core = (MultiverseCore) plugin;
-        } else {
+        try {
+            core = MultiverseCoreApi.get();
+        } catch (IllegalStateException e) {
             this.core = null;
             main.getLogger().severe("StayPut loaded but Multiverse did not, something is wrong.");
         }
     }
+
+    public MultiverseCoreApi getCore() {return this.core;}
 
     public boolean loadedMultiverse() {
         return this.core != null;

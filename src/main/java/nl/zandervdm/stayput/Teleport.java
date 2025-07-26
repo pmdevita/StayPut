@@ -32,36 +32,48 @@ public class Teleport {
 
 
     public Location handleTeleport(Player player, Location from, Location to) {
+        return handleTeleport(player, from, to, true);
+    }
+
+    public Location handleTeleport(Player player, Location from, Location to, boolean checkSpawn) {
         // Determine if we should update this player's now previous location
         if (this.plugin.getRuleManager().shouldUpdateLocation(player, from, to) && from.getWorld() != null) {
+            // We should, update it in the database
             PlayerLocation currentLocation = new PlayerLocation(player, plugin.configManager.getWorldGroup(from.getWorld()), from);
             this.plugin.getDatabase().setLocation(currentLocation);
         }
 
         // Determine if we should teleport the player and if we should, get the new Location
-        if (to != null) {
-            this.plugin.debugLogger(player.getName() + ": " + Objects.requireNonNull(from.getWorld()).getName() + " --> " + Objects.requireNonNull(to.getWorld()).getName());
-//            PlayerLocation previousLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, from, to);
-            PlayerLocation previousPlayerLocation = this.plugin.getRuleManager().shouldTeleportPlayer(player, from, to);
-
-            if (previousPlayerLocation != null) {
-                Location previousLocation = previousPlayerLocation.getLocation();
-                if (this.isPressurePlate(previousLocation)) {
-                    // Find a valid spot around the location
-                    Location newLocation = this.findAvailableLocation(previousLocation);
-                    // If found, use it instead
-                    if (newLocation != null) previousLocation = newLocation ;
-                }
-
-                //There is a location, and the player should teleport, so teleport him
-                this.plugin.debugLogger("Teleporting player to his previous location");
-//                ourTeleports.add(new TeleportData(player, previousLocation));
-//                player.teleport(previousLocation);
-
-                return previousLocation;    // We teleported the player ourselves, cancel the event's teleport
-            }
+        if (to == null) {
+            return null;
         }
-        return null; // We didn't teleport the player ourselves, let the event continue normally
+
+        this.plugin.debugLogger(player.getName() + ": " + Objects.requireNonNull(from.getWorld()).getName() + " --> " + Objects.requireNonNull(to.getWorld()).getName());
+
+        // Do the rules allow us to touch this teleport?
+        if (!this.plugin.getRuleManager().shouldTeleportPlayer(player, from, to)) {
+            return null;
+        }
+
+        // If we need to check spawn and this is a spawn location, don't redirect.
+        if (checkSpawn && this.plugin.getRuleManager().isSpawnLocation(to)) {
+            return null;
+        }
+
+        PlayerLocation previousLocation = this.plugin.getDatabase().getLocation(player, to.getWorld());
+
+        // If there is no previous location for this world, just ignore it
+        if (previousLocation == null) {
+            this.plugin.debugLogger("Not teleporting player because there is no previous location found");
+            return null;
+        }
+
+        // Use Multiverse to ensure safety
+        Location safePreviousLocation = plugin.getMultiverse().getCore().getBlockSafety().findSafeSpawnLocation(previousLocation.getLocation());
+
+        //There is a location, and the player should teleport, so teleport him
+        this.plugin.debugLogger("Teleporting player to his previous location");
+        return safePreviousLocation;    // We teleported the player ourselves, cancel the event's teleport
     }
 
     protected boolean isPressurePlate(Location toLocation) {

@@ -14,10 +14,12 @@ public class RuleManager {
 
     protected Main plugin;
     HashSet<String> blacklistedWorlds;
+    int spawnDetectionThreshold;
 
     public RuleManager(Main plugin) {
         this.plugin = plugin;
         blacklistedWorlds = new HashSet<>(this.plugin.getConfig().getStringList("blacklisted-worlds"));
+        spawnDetectionThreshold = this.plugin.getConfig().getInt("spawn-detection-threshold", 0);
         plugin.debugLogger("Loaded blacklisted worlds " + Arrays.toString(blacklistedWorlds.toArray()));
     }
 
@@ -102,8 +104,7 @@ public class RuleManager {
         // Why would you do this to me
         // Turns out its a Multiverse SpawnLocation which subclasses Location and allows for weird world properties
 
-
-        if (toLocation.equals(spawn)) {
+        if (toLocation.distance(spawn) <= this.spawnDetectionThreshold) {
             this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
             this.plugin.debugLogger(toLocation + " == " + spawn);
             return false;

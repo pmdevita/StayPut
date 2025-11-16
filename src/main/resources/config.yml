@@ -17,5 +17,11 @@ database:
 #  - world
 #  - world_nether
 
+# StayPut redirects a teleport when it detects it is going to a world's spawn.
+# Within how many blocks does a teleport location need to be near spawn
+# in order to trigger redirection?
+# Increasing may improve detection but increase false positives. 1 is recommended.
+spawn-detection-threshold: 1
+
 # Want to debug and see why certain actions are (not) executed? Set this to true. Default: false
 debug: false

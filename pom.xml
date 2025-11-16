@@ -6,11 +6,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.9.22</kotlin.version>
-        <spigot.version>1.20.4</spigot.version>
+        <spigot.version>1.21.8</spigot.version>
+        <multiverse.version>5.0.0-SNAPSHOT</multiverse.version>
     </properties>
     <groupId>nl.zandervdm.stayput</groupId>
     <artifactId>StayPut</artifactId>
-    <version>2.1.0b</version>
+    <version>3.0.0c</version>
 
     <repositories>
         <repository>
@@ -19,7 +20,7 @@
         </repository>
         <repository>
             <id>Multiverse-Core</id>
-            <url>https://repo.onarandombox.com/content/repositories/multiverse/</url>
+            <url>https://repo.onarandombox.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -42,15 +43,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.onarandombox.multiversecore</groupId>
-            <artifactId>Multiverse-Core</artifactId>
-            <version>4.3.1</version>
+            <groupId>org.mvplugins.multiverse.core</groupId>
+            <artifactId>multiverse-core</artifactId>
+            <version>${multiverse.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.onarandombox.multiverseportals</groupId>
-            <artifactId>Multiverse-Portals</artifactId>
-            <version>4.2.1</version>
+            <groupId>org.mvplugins.multiverse.portals</groupId>
+            <artifactId>multiverse-portals</artifactId>
+            <version>${multiverse.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

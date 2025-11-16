@@ -1,10 +1,10 @@
 package nl.zandervdm.stayput.Utils;
 
-import nl.zandervdm.stayput.Database.PlayerLocation;
 import nl.zandervdm.stayput.Main;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,10 +14,12 @@ public class RuleManager {
 
     protected Main plugin;
     HashSet<String> blacklistedWorlds;
+    int spawnDetectionThreshold;
 
     public RuleManager(Main plugin) {
         this.plugin = plugin;
         blacklistedWorlds = new HashSet<>(this.plugin.getConfig().getStringList("blacklisted-worlds"));
+        spawnDetectionThreshold = this.plugin.getConfig().getInt("spawn-detection-threshold", 0);
         plugin.debugLogger("Loaded blacklisted worlds " + Arrays.toString(blacklistedWorlds.toArray()));
     }
 
@@ -51,30 +53,48 @@ public class RuleManager {
         return true;
     }
 
-    public PlayerLocation shouldTeleportPlayer(Player player, Location from, Location toLocation) {
+    public boolean shouldTeleportPlayer(Player player, Location from, Location toLocation) {
         World toWorld = toLocation.getWorld();
 
         if (toWorld == null || from.getWorld() == null) {
-            this.plugin.debugLogger("shouldTeleporPlayer was given locations with null world values???");
-            return null;
+            this.plugin.debugLogger("shouldTeleportPlayer was given locations with null world values???");
+            return false;
         }
 
         // If this world is inside the configs blacklist, ignore
         if (this.worldIsBlacklisted(toWorld)) {
-            this.plugin.debugLogger("Not redirecting teleport because this world is blacklisted");
-            return null;
+            this.plugin.debugLogger("Not redirecting teleport because the destination world \"" + toWorld + "\" is blacklisted");
+            return false;
         }
 
         // If we didn't change worlds, ignore the teleport
         if (from.getWorld().equals(toLocation.getWorld())) {
             this.plugin.debugLogger("Not redirecting teleport because player did not jump worlds");
-            return null;
+            return false;
         }
+
+        // If this is a teleport inside a world group, ignore it
+        if (Objects.equals(plugin.getConfigManager().getWorldGroup(from.getWorld()), plugin.getConfigManager().getWorldGroup(toLocation.getWorld()))) {
+            this.plugin.debugLogger("Teleport within world group, not redirecting");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isSpawnLocation(Location toLocation) {
 
         // If we are teleporting to a defined location in a world, then it is a directed teleport, and we shouldn't touch it
 //        Location to = toLocation.clone();
         Location vanillaSpawn = toLocation.getWorld().getSpawnLocation();
-        Location spawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(toLocation.getWorld()).getSpawnLocation();
+
+        MultiverseWorld world = this.plugin.getMultiverse().core.getWorldManager().getWorld(toLocation.getWorld()).getOrNull();
+        if (world == null) {
+            this.plugin.debugLogger("Could not find MultiverseWorld for world " + toLocation.getWorld());
+            return false;
+        }
+
+        Location spawn = world.getSpawnLocation();
         this.plugin.debugLogger("Vanilla Spawn: " + vanillaSpawn.toString() + " MV Spawn: " + spawn.toString());
 //        Location MVSpawn = this.plugin.getMultiverse().core.getMVWorldManager().getMVWorld(to.getWorld()).getSpawnLocation();
 //        this.plugin.debugLogger("MVSpawn is " + MVSpawn.toString());
@@ -84,33 +104,15 @@ public class RuleManager {
         // Why would you do this to me
         // Turns out its a Multiverse SpawnLocation which subclasses Location and allows for weird world properties
 
-
-        if (toLocation.equals(spawn)) {
+        if (toLocation.distance(spawn) <= this.spawnDetectionThreshold) {
             this.plugin.debugLogger("Appears to be a teleport to world spawn, will redirect if possible");
             this.plugin.debugLogger(toLocation + " == " + spawn);
+            return false;
         } else {
             this.plugin.debugLogger("Not redirecting teleport because the destination appears to be specific location in the world. (If this was supposed to be redirected, there may be some confusion about the spawn location between the vanilla server and plugins.)");
             this.plugin.debugLogger(toLocation + " != " + spawn);
-            return null;
+            return true;
         }
-
-        // If this is a teleport inside a world group, ignore it
-        if (Objects.equals(plugin.getConfigManager().getWorldGroup(from.getWorld()), plugin.getConfigManager().getWorldGroup(toLocation.getWorld()))) {
-            this.plugin.debugLogger("Teleport within world group, not redirecting");
-            return null;
-        }
-
-
-        // In any other case, find the previous spot of the user in this world
-        PlayerLocation previousLocation = this.plugin.getDatabase().getLocation(player, toWorld);
-
-        // If there is no previous location for this world, just ignore it
-        if (previousLocation == null) {
-            this.plugin.debugLogger("Not teleporting player because there is no previous location found");
-            return null;
-        }
-
-        return previousLocation;
     }
 
     public boolean worldIsBlacklisted(World world) {
